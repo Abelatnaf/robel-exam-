@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Moral Education Test — Grade 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E0B1A; --panel:#171231; --glass:rgba(34,26,69,.55); --glass-solid:#221A45;
+    --line:rgba(155,123,255,.18); --line-strong:rgba(155,123,255,.34);
+    --violet:#7C5CFF; --violet-bright:#9B7BFF; --gold:#F5C24B;
+    --text:#EDEBFF; --muted:#A39FC9; --faint:#6E6796;
+    --green:#3FD17A; --green-bg:rgba(63,209,122,.14);
+    --red:#FF6B6B; --red-bg:rgba(255,107,107,.14);
+    --display:'Bricolage Grotesque','Segoe UI',system-ui,-apple-system,sans-serif;
+    --body:'Hanken Grotesk','Segoe UI',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'Cascadia Code',Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--body); color:var(--text); background:var(--bg);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+    -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
+    overflow-x:hidden;
+    background-image:
+      radial-gradient(1100px 700px at 12% -8%, rgba(124,92,255,.20), transparent 60%),
+      radial-gradient(900px 600px at 110% 115%, rgba(245,194,75,.10), transparent 55%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:22px 18px 56px; min-height:100%}
+  .screen{display:none; animation:fade .4s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+  @media (prefers-reduced-motion: reduce){ .screen,.card{animation:none!important} *{transition:none!important} }
+
+  .card{
+    background:var(--glass); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--line); border-radius:22px; padding:26px;
+    box-shadow:0 24px 60px rgba(6,4,16,.5);
+  }
+
+  /* ---------- intro ---------- */
+  .eyebrow{font-family:var(--mono); font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--gold); margin-bottom:14px}
+  .title{font-family:var(--display); font-weight:800; font-size:2.4rem; line-height:1.05; letter-spacing:-.02em}
+  .subtitle{color:var(--muted); margin-top:10px; font-size:1.05rem}
+  .meta-row{display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 6px}
+  .chip{display:inline-flex; align-items:center; gap:8px; background:rgba(124,92,255,.10);
+    border:1px solid var(--line); border-radius:999px; padding:9px 15px; font-size:.9rem; color:var(--text)}
+  .chip b{font-family:var(--mono); color:var(--gold); font-weight:700}
+  .rules{margin-top:22px; border-top:1px solid var(--line); padding-top:20px}
+  .rules h3{font-family:var(--display); font-weight:700; font-size:1rem; margin-bottom:12px; color:var(--text)}
+  .rule{display:flex; gap:12px; align-items:flex-start; margin-bottom:11px; color:var(--muted); font-size:.96rem}
+  .rule svg{flex:0 0 auto; margin-top:2px}
+  .field{margin-top:24px}
+  .field label{display:block; font-size:.86rem; color:var(--muted); margin-bottom:8px}
+  .field input{
+    width:100%; font-family:var(--body); font-size:1.05rem; color:var(--text);
+    background:rgba(14,11,26,.6); border:1px solid var(--line-strong); border-radius:14px;
+    padding:15px 16px; outline:none; transition:border-color .2s, box-shadow .2s; -webkit-user-select:text; user-select:text;
+  }
+  .field input:focus{border-color:var(--violet-bright); box-shadow:0 0 0 4px rgba(124,92,255,.18)}
+
+  .btn{
+    font-family:var(--display); font-weight:700; font-size:1.05rem; cursor:pointer;
+    border:none; border-radius:14px; padding:16px 22px; color:#0E0B1A;
+    background:linear-gradient(135deg,var(--violet-bright),var(--violet));
+    transition:transform .15s ease, box-shadow .2s ease, filter .2s; box-shadow:0 12px 30px rgba(124,92,255,.34);
+  }
+  .btn:hover{transform:translateY(-2px); box-shadow:0 18px 40px rgba(124,92,255,.46)}
+  .btn:active{transform:translateY(0)}
+  .btn:focus-visible{outline:3px solid var(--gold); outline-offset:3px}
+  .btn.block{width:100%; margin-top:26px; padding:18px}
+  .btn.ghost{background:transparent; color:var(--text); border:1px solid var(--line-strong); box-shadow:none}
+  .btn.ghost:hover{background:rgba(124,92,255,.10); box-shadow:none}
+  .btn.ghost:disabled{opacity:.35; cursor:not-allowed; transform:none}
+
+  /* ---------- quiz status bar ---------- */
+  .statusbar{
+    position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:12px;
+    background:rgba(23,18,49,.82); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--line); border-radius:18px; padding:12px 16px; margin-bottom:18px;
+  }
+  .timer{display:flex; align-items:center; gap:9px; font-family:var(--mono); font-weight:700; font-size:1.5rem; letter-spacing:.02em; color:var(--gold)}
+  .timer.warn{color:#FFB259}
+  .timer.danger{color:var(--red); animation:pulse 1s infinite}
+  @keyframes pulse{0%,100%{opacity:1} 50%{opacity:.55}}
+  .timer small{font-family:var(--body); font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); font-weight:600}
+  .status-spacer{flex:1}
+  .qcount{font-family:var(--mono); font-size:.92rem; color:var(--muted)}
+  .qcount b{color:var(--text)}
+  .lockchip{display:inline-flex; align-items:center; gap:7px; font-size:.78rem; color:var(--green);
+    background:var(--green-bg); border:1px solid rgba(63,209,122,.28); border-radius:999px; padding:6px 11px; font-weight:600}
+  .progress-track{height:5px; background:rgba(14,11,26,.7); border-radius:999px; overflow:hidden; margin-bottom:18px}
+  .progress-fill{height:100%; width:0; background:linear-gradient(90deg,var(--violet),var(--violet-bright)); border-radius:999px; transition:width .35s ease}
+
+  /* ---------- question ---------- */
+  .qbadge{display:inline-block; font-family:var(--mono); font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--violet-bright); background:rgba(124,92,255,.12); border:1px solid var(--line); border-radius:8px; padding:6px 11px; margin-bottom:16px}
+  .qtext{font-family:var(--display); font-weight:700; font-size:1.42rem; line-height:1.34; letter-spacing:-.01em; margin-bottom:22px}
+  .options{display:flex; flex-direction:column; gap:12px}
+  .opt{
+    display:flex; align-items:center; gap:14px; text-align:left; cursor:pointer; width:100%;
+    font-family:var(--body); font-size:1.06rem; color:var(--text);
+    background:rgba(14,11,26,.45); border:1.5px solid var(--line); border-radius:15px; padding:16px 18px;
+    transition:border-color .18s, background .18s, transform .12s;
+  }
+  .opt:hover{border-color:var(--line-strong); background:rgba(124,92,255,.08); transform:translateX(3px)}
+  .opt:focus-visible{outline:3px solid var(--gold); outline-offset:2px}
+  .opt .marker{flex:0 0 auto; width:26px; height:26px; border-radius:50%; border:2px solid var(--faint);
+    display:grid; place-items:center; transition:all .18s; font-family:var(--mono); font-size:.8rem; color:var(--muted)}
+  .opt.selected{border-color:var(--violet-bright); background:rgba(124,92,255,.18)}
+  .opt.selected .marker{border-color:var(--violet-bright); background:var(--violet-bright); color:#0E0B1A}
+
+  .navrow{display:flex; gap:12px; margin-top:26px}
+  .navrow .btn{flex:1}
+
+  /* ---------- navigator ---------- */
+  .navigator{margin-top:24px; border-top:1px solid var(--line); padding-top:18px}
+  .navigator .lbl{font-size:.78rem; color:var(--faint); letter-spacing:.12em; text-transform:uppercase; margin-bottom:12px; font-family:var(--mono)}
+  .dots{display:flex; flex-wrap:wrap; gap:8px}
+  .dot{width:34px; height:34px; border-radius:10px; cursor:pointer; font-family:var(--mono); font-size:.8rem; font-weight:700;
+    display:grid; place-items:center; color:var(--faint); background:rgba(14,11,26,.5); border:1px solid var(--line); transition:all .15s}
+  .dot:hover{border-color:var(--violet-bright); color:var(--text)}
+  .dot.answered{background:rgba(124,92,255,.20); border-color:var(--line-strong); color:var(--text)}
+  .dot.current{outline:2px solid var(--gold); outline-offset:1px; color:var(--gold)}
+
+  /* ---------- lock overlay ---------- */
+  .overlay{position:fixed; inset:0; z-index:200; display:none; place-items:center; padding:24px;
+    background:rgba(5,3,14,.86); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px)}
+  .overlay.show{display:grid}
+  .overlay .box{max-width:440px; text-align:center}
+  .overlay h2{font-family:var(--display); font-weight:800; font-size:1.7rem; margin:18px 0 10px; color:var(--gold)}
+  .overlay p{color:var(--muted); font-size:1.02rem; margin-bottom:8px}
+
+  /* ---------- results ---------- */
+  .result-top{text-align:center; padding:14px 0 4px}
+  .score-num{font-family:var(--display); font-weight:800; font-size:5rem; line-height:1; letter-spacing:-.03em}
+  .score-out{color:var(--muted); font-family:var(--mono); font-size:1.1rem; margin-top:6px}
+  .score-pct{display:inline-block; margin-top:16px; font-family:var(--mono); font-weight:700; font-size:1rem; padding:8px 16px; border-radius:999px}
+  .verdict{font-family:var(--display); font-weight:700; font-size:1.3rem; margin-top:18px}
+  .unit-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:26px}
+  .unit-card{background:rgba(14,11,26,.45); border:1px solid var(--line); border-radius:16px; padding:18px}
+  .unit-card .u{font-size:.78rem; color:var(--gold); font-family:var(--mono); letter-spacing:.12em; text-transform:uppercase}
+  .unit-card .t{font-family:var(--display); font-weight:700; font-size:1.02rem; margin:7px 0 12px; color:var(--text); line-height:1.2}
+  .unit-card .s{font-family:var(--mono); font-size:1.7rem; font-weight:700; color:var(--violet-bright)}
+  .unit-card .s span{font-size:.95rem; color:var(--faint)}
+  .integrity{display:flex; align-items:center; gap:10px; margin-top:18px; font-size:.94rem; padding:14px 16px; border-radius:14px;
+    background:var(--green-bg); border:1px solid rgba(63,209,122,.28); color:var(--green)}
+  .integrity.flag{background:rgba(245,194,75,.12); border-color:rgba(245,194,75,.3); color:var(--gold)}
+
+  /* ---------- review ---------- */
+  .review{margin-top:14px; display:flex; flex-direction:column; gap:14px}
+  .rev-item{border:1px solid var(--line); border-radius:16px; padding:18px; background:rgba(14,11,26,.4)}
+  .rev-item.correct{border-color:rgba(63,209,122,.4)}
+  .rev-item.wrong{border-color:rgba(255,107,107,.4)}
+  .rev-head{display:flex; gap:10px; align-items:flex-start; margin-bottom:10px}
+  .rev-num{font-family:var(--mono); font-weight:700; font-size:.85rem; color:var(--faint); flex:0 0 auto}
+  .rev-q{font-family:var(--display); font-weight:700; font-size:1.05rem; line-height:1.3}
+  .rev-tag{display:inline-block; font-size:.72rem; font-weight:700; padding:3px 9px; border-radius:7px; margin-left:auto; flex:0 0 auto; font-family:var(--mono)}
+  .rev-tag.correct{background:var(--green-bg); color:var(--green)}
+  .rev-tag.wrong{background:var(--red-bg); color:var(--red)}
+  .rev-line{font-size:.95rem; margin:5px 0; padding-left:2px}
+  .rev-line .k{color:var(--faint); display:inline-block; min-width:108px}
+  .rev-line.good .v{color:var(--green); font-weight:600}
+  .rev-line.bad .v{color:var(--red); font-weight:600}
+  .rev-exp{margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); font-size:.92rem; color:var(--muted)}
+  .rev-exp b{color:var(--gold); font-family:var(--mono); font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:4px}
+
+  .footnote{text-align:center; color:var(--faint); font-size:.82rem; margin-top:30px}
+  @media (max-width:520px){
+    .title{font-size:2rem} .qtext{font-size:1.26rem} .score-num{font-size:4rem}
+    .unit-grid{grid-template-columns:1fr} .timer{font-size:1.3rem}
+    .navrow{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section id="intro" class="screen active">
+    <div class="card">
+      <div class="eyebrow">Grade 5 · Moral Education</div>
+      <h1 class="title">Unit 5 &amp; 6 Test</h1>
+      <p class="subtitle">The Ethics of Social Media Use &amp; Cultural Interaction</p>
+
+      <div class="meta-row">
+        <span class="chip"><b>40</b> questions</span>
+        <span class="chip"><b>30:00</b> minutes</span>
+        <span class="chip">True / False &amp; Best answer</span>
+      </div>
+
+      <div class="rules">
+        <h3>Before you begin</h3>
+        <div class="rule">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9B7BFF" stroke-width="2.2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <span>The test opens in full screen. Stay in the test until you finish — leaving the screen is recorded.</span>
+        </div>
+        <div class="rule">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9B7BFF" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span>You have 30 minutes. The timer turns red near the end and submits automatically at zero.</span>
+        </div>
+        <div class="rule">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9B7BFF" stroke-width="2.2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Answer every question. Use the numbers at the bottom to jump back and check.</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="name">Type your name</label>
+        <input id="name" type="text" placeholder="e.g. Yonas" autocomplete="off" spellcheck="false">
+      </div>
+
+      <button class="btn block" id="startBtn">Start the test</button>
+    </div>
+    <p class="footnote">Secure test mode · built for focused, fair testing</p>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="quiz" class="screen">
+    <div class="statusbar">
+      <div class="timer" id="timer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="time">30:00</span></div>
+      <div class="status-spacer"></div>
+      <div class="qcount">Q <b id="qNow">1</b> / 40</div>
+      <span class="lockchip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Secure</span>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+
+    <div class="card">
+      <span class="qbadge" id="qBadge">True or False</span>
+      <h2 class="qtext" id="qText">Question text</h2>
+      <div class="options" id="options"></div>
+
+      <div class="navrow">
+        <button class="btn ghost" id="prevBtn">← Previous</button>
+        <button class="btn" id="nextBtn">Next →</button>
+      </div>
+
+      <div class="navigator">
+        <div class="lbl">Jump to question</div>
+        <div class="dots" id="dots"></div>
+      </div>
+    </div>
+    <p class="footnote">Stay in this window · your answers are saved as you go</p>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results" class="screen">
+    <div class="card">
+      <div class="result-top">
+        <div class="eyebrow" id="resName">Results</div>
+        <div class="score-num" id="scoreNum">0</div>
+        <div class="score-out">out of 40 correct</div>
+        <div class="score-pct" id="scorePct">0%</div>
+        <div class="verdict" id="verdict"></div>
+      </div>
+
+      <div class="unit-grid">
+        <div class="unit-card">
+          <div class="u">Unit 5</div>
+          <div class="t">Ethics of Social Media</div>
+          <div class="s"><span id="u5"></span></div>
+        </div>
+        <div class="unit-card">
+          <div class="u">Unit 6</div>
+          <div class="t">Cultural Interaction</div>
+          <div class="s"><span id="u6"></span></div>
+        </div>
+      </div>
+
+      <div class="integrity" id="integrity"></div>
+
+      <div class="navrow">
+        <button class="btn ghost" id="reviewBtn">Review answers (for parent)</button>
+        <button class="btn" id="restartBtn">New attempt</button>
+      </div>
+    </div>
+
+    <div id="reviewWrap" style="display:none">
+      <p class="footnote" style="margin-top:34px; font-size:.92rem; color:var(--muted)">Full answer review — green is correct, red is the wrong choice.</p>
+      <div class="review" id="review"></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ LOCK OVERLAY ============ -->
+<div class="overlay" id="overlay">
+  <div class="box">
+    <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#F5C24B" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+    <h2>Stay in the test</h2>
+    <p>You left the test window. This was recorded.</p>
+    <p>The timer is still running — return now.</p>
+    <button class="btn block" id="resumeBtn" style="margin-top:22px">Return to the test</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   QUESTION BANK — 40 questions
+   unit: 5 or 6 | type: 'tf' or 'mc'
+   o: options | a: index of correct option | e: explanation
+   ============================================================ */
+var QUESTIONS = [
+  // ---------- UNIT 5 : Ethics of Social Media — True/False ----------
+  {unit:5,type:'tf',q:"Information shared on social media is useful only for personal purposes, never for professional ones.",o:["True","False"],a:1,e:"Social media spreads information for both personal and professional purposes."},
+  {unit:5,type:'tf',q:"If a story spreads widely and quickly on social media, that proves it is true.",o:["True","False"],a:1,e:"Spreading fast is not proof — false information spreads fast too, so you must verify before sharing."},
+  {unit:5,type:'tf',q:"Privacy violations on social media can expose a person to risks such as identity theft.",o:["True","False"],a:0,e:"Unauthorised use of personal data can lead to identity theft."},
+  {unit:5,type:'tf',q:"Because most social media apps are free to use, they cannot expose users to any security risks.",o:["True","False"],a:1,e:"Free platforms can still be hacked or suffer data breaches."},
+  {unit:5,type:'tf',q:"Defamation and copyright infringement on social media can lead to legal action and penalties.",o:["True","False"],a:0,e:"These are legal consequences of unethical use."},
+  {unit:5,type:'tf',q:"Engaging in constructive conversation means insulting people who disagree with you.",o:["True","False"],a:1,e:"Constructive conversation is respectful — insulting others is the opposite."},
+  {unit:5,type:'tf',q:"Posting meaningful, selective content shows better etiquette than flooding your feed with unimportant posts.",o:["True","False"],a:0,e:"Being selective and prioritising meaningful content is good etiquette."},
+  {unit:5,type:'tf',q:"Hate speech spread on social media can incite violence and divide society.",o:["True","False"],a:0,e:"This is a listed consequence of misinformation and hate speech."},
+  {unit:5,type:'tf',q:"Respecting other people's privacy means you may freely post their personal information online.",o:["True","False"],a:1,e:"Respecting privacy means NOT sharing others' personal information without permission."},
+  {unit:5,type:'tf',q:"Excessive social media use can contribute to addiction, anxiety, and depression, especially in young people.",o:["True","False"],a:0,e:"These mental-health problems are listed effects of heavy use."},
+  // ---------- UNIT 5 : Best answer ----------
+  {unit:5,type:'mc',q:"Which of the following is the best definition of social media?",o:["Websites and apps that let users create, share, and interact with content and connect with others","Television channels that broadcast the news to viewers","Printed newspapers delivered to homes each morning","Radio stations that mainly play music"],a:0,e:"This matches the definition: platforms for creating, sharing, and connecting."},
+  {unit:5,type:'mc',q:"Selam finds a drawing made by another artist and posts it as if it were her own work. Which social media rule did she break?",o:["Giving credit where credit is due (respecting copyright)","Avoiding cyber bullying","Being polite and courteous","Verifying information before sharing"],a:0,e:"Using someone's work without crediting them breaks copyright etiquette."},
+  {unit:5,type:'mc',q:"Which of these is a consequence of using social media UNETHICALLY?",o:["The spread of misinformation and hate speech","Better privacy for every user","Stronger trust in institutions","Improved mental health for young people"],a:0,e:"The other three are positive — misinformation and hate speech are listed harms."},
+  {unit:5,type:'mc',q:"Dawit uses social media to network with other professionals and search for jobs. This is an example of:",o:["Professional use","Personal use","Business use","Educational use"],a:0,e:"Networking and job searching is professional use."},
+  {unit:5,type:'mc',q:"Which platform-and-category pairing is correct?",o:["YouTube — Photo and video sharing","WhatsApp — Photo and video sharing","Signal — Social networking","LinkedIn — Messaging and communication"],a:0,e:"YouTube is a video-sharing platform; the others are mismatched."},
+  {unit:5,type:'mc',q:"A shop uses social media for advertising and customer engagement. This is best described as:",o:["Business use","Educational use","Personal use","Professional use"],a:0,e:"Marketing, advertising and customer engagement is business use."},
+  {unit:5,type:'mc',q:"Which of the following is the best example of good social media etiquette?",o:["Checking whether a story is true before sharing it","Sharing a shocking story first to get attention","Posting as many comments as possible","Copying others' work without naming them"],a:0,e:"Verifying information before sharing is core etiquette."},
+  {unit:5,type:'mc',q:"Why is heavy social media use a special concern for young people?",o:["It can lead to addiction, social anxiety, and depression","It makes the internet slower for everyone","It uses too much electricity","It is against the law for young people"],a:0,e:"Mental-health risks are the stated concern."},
+  {unit:5,type:'mc',q:"Which statement about misinformation is the most accurate?",o:["It can erode trust in institutions and even incite violence","It is always easy to spot","It only harms businesses","It disappears after one day"],a:0,e:"This matches the listed danger of misinformation."},
+  {unit:5,type:'mc',q:"What is the main message of the unit's conclusion about social media?",o:["Users must stay aware of issues like privacy, cyber bullying, misinformation, and addiction","Social media has no downsides at all","Social media should be banned for everyone","Only businesses need to be careful online"],a:0,e:"The conclusion stresses awareness of these issues."},
+
+  // ---------- UNIT 6 : Cultural Interaction — True/False ----------
+  {unit:6,type:'tf',q:"Culture is innate, meaning people are born already knowing it.",o:["True","False"],a:1,e:"Culture is learned and passed down — it is not innate."},
+  {unit:6,type:'tf',q:"Beliefs, values, and norms are non-material culture, while food and clothing are material culture.",o:["True","False"],a:0,e:"Non-material culture is ideas and values; material culture is physical artifacts."},
+  {unit:6,type:'tf',q:"A 'dynamic' culture is one that stays exactly the same forever.",o:["True","False"],a:1,e:"Dynamic means culture changes and evolves over time."},
+  {unit:6,type:'tf',q:"Active listening and empathy are both characteristics of effective communication.",o:["True","False"],a:0,e:"Both are listed characteristics of effective communication."},
+  {unit:6,type:'tf',q:"Cultural interaction can only happen through travel and tourism.",o:["True","False"],a:1,e:"It also happens through education, international collaboration, and migration."},
+  {unit:6,type:'tf',q:"Effective communication is only about expressing your own message, not understanding others.",o:["True","False"],a:1,e:"It also requires active listening and understanding others' perspectives."},
+  {unit:6,type:'tf',q:"Exposure to different cultures can broaden a person's perspective and encourage open-mindedness.",o:["True","False"],a:0,e:"This is the 'broadened perspectives' benefit."},
+  {unit:6,type:'tf',q:"'Courtesy' in communication means it is fine to be rude when the news is difficult.",o:["True","False"],a:1,e:"Courtesy means staying respectful and polite even when delivering difficult news."},
+  {unit:6,type:'tf',q:"Language and symbols are systems of meaning that can be unique to a culture.",o:["True","False"],a:0,e:"Symbols and language are listed components of culture."},
+  {unit:6,type:'tf',q:"Cultural interaction builds walls and separation between different groups of people.",o:["True","False"],a:1,e:"It breaks down barriers and bridges cultural gaps."},
+  // ---------- UNIT 6 : Best answer ----------
+  {unit:6,type:'mc',q:"Which of the following is the best definition of culture?",o:["The shared system of attitudes, values, beliefs, behaviours, symbols, and norms of a group","The money a country uses for trade","The laws written down by a government","The weather and climate of a region"],a:0,e:"This matches the definition of culture."},
+  {unit:6,type:'mc',q:"Which of the following is an example of NON-material culture?",o:["Beliefs and values","Traditional clothing","A mobile phone","A piece of art"],a:0,e:"Non-material culture is ideas; the others are physical artifacts."},
+  {unit:6,type:'mc',q:"Which of the following is a characteristic of culture?",o:["It is learned and passed down through generations","It is innate and fixed at birth","It is identical in every society","It cannot be shared between people"],a:0,e:"Culture is learned and transmitted across generations."},
+  {unit:6,type:'mc',q:"Bethel travels to another country and learns the local people's traditions and food. This is an example of:",o:["Cultural interaction","A privacy violation","Misinformation","A security risk"],a:0,e:"Contact and exchange between cultures is cultural interaction."},
+  {unit:6,type:'mc',q:"Why is effective communication important for cultural interaction?",o:["It builds understanding, empathy, and tolerance between different people","It makes one culture more powerful than another","It removes any need to listen to others","It proves which culture is correct"],a:0,e:"Communication fosters understanding and tolerance."},
+  {unit:6,type:'mc',q:"Which set lists characteristics of effective communication?",o:["Clarity, conciseness, correctness","Confusion, length, opinion","Silence, speed, secrecy","Anger, jargon, repetition"],a:0,e:"These are three of the listed 'C' characteristics."},
+  {unit:6,type:'mc',q:"Which of the following is NOT a benefit of cultural interaction?",o:["Increased misunderstanding and conflict","Broadened perspectives","Mutual respect","Peace and understanding"],a:0,e:"The others are benefits — interaction reduces, not increases, misunderstanding."},
+  {unit:6,type:'mc',q:"'Consideration' as a characteristic of effective communication means:",o:["Being mindful of the audience's background and perspective","Ignoring who the audience is","Speaking as fast as possible","Using complicated words on purpose"],a:0,e:"Consideration means tailoring the message to the audience."},
+  {unit:6,type:'mc',q:"Which of the following is the best example of material culture?",o:["A traditional dress","A religious belief","A spoken language","A social value"],a:0,e:"Material culture is physical objects, like clothing."},
+  {unit:6,type:'mc',q:"What does cultural interaction most help to build between people of different backgrounds?",o:["Meaningful connections and trust","Walls and separation","Competition and conflict","Silence and distance"],a:0,e:"It bridges gaps and builds mutual respect and connections."}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var TOTAL_SECONDS = 30 * 60;
+var order = [];          // shuffled question indices
+var optMap = [];         // per question: shuffled option index order
+var answers = [];        // chosen displayed-option index (or null)
+var cur = 0;
+var remaining = TOTAL_SECONDS;
+var timerId = null;
+var awayCount = 0;
+var lastAwayTs = 0;
+var fsEverActive = false;
+var quizActive = false;
+var finished = false;
+var ignoreLockUntil = 0;
+
+/* ---------- helpers ---------- */
+function $(id){ return document.getElementById(id); }
+function show(screen){
+  ['intro','quiz','results'].forEach(function(s){ $(s).classList.toggle('active', s===screen); });
+  window.scrollTo(0,0);
+}
+function shuffle(arr){
+  for(var i=arr.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=arr[i]; arr[i]=arr[j]; arr[j]=t; }
+  return arr;
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+function init(){
+  order = shuffle(QUESTIONS.map(function(_,i){ return i; }));
+  optMap = order.map(function(qi){
+    var q = QUESTIONS[qi];
+    var idx = q.o.map(function(_,i){ return i; });
+    // shuffle options for multiple-choice; keep True/False in natural order
+    if(q.type === 'mc'){ shuffle(idx); }
+    return idx;
+  });
+  answers = order.map(function(){ return null; });
+  cur = 0;
+  remaining = TOTAL_SECONDS;
+  awayCount = 0; finished = false;
+  buildDots();
+  renderQuestion();
+}
+
+function startQuiz(){
+  var nm = $('name').value.trim();
+  if(nm){ $('resName').textContent = nm + " · Results"; }
+  init();
+  show('quiz');
+  quizActive = true;
+  requestFs();
+  startTimer();
+}
+
+/* ============================================================
+   FULLSCREEN + LOCK
+   ============================================================ */
+function requestFs(){
+  ignoreLockUntil = Date.now() + 1200;
+  var el = document.documentElement;
+  var p = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+  if(p){
+    try{
+      var r = p.call(el);
+      if(r && r.then){ r.then(function(){ fsEverActive = true; }).catch(function(){}); }
+      else { fsEverActive = true; }
+    }catch(e){}
+  }
+}
+function isFs(){ return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement); }
+
+function registerAway(){
+  var now = Date.now();
+  if(now < ignoreLockUntil) return;
+  if(now - lastAwayTs < 900) return;   // debounce double events from one action
+  lastAwayTs = now;
+  awayCount++;
+}
+function checkLock(){
+  if(!quizActive || finished) return;
+  var away = document.hidden || (fsEverActive && !isFs());
+  if(away){
+    if(now() >= ignoreLockUntil){ registerAway(); }
+    $('overlay').classList.add('show');
+  } else {
+    $('overlay').classList.remove('show');
+  }
+}
+function now(){ return Date.now(); }
+
+document.addEventListener('visibilitychange', checkLock);
+window.addEventListener('blur', function(){ setTimeout(checkLock, 60); });
+window.addEventListener('focus', function(){ if(!document.hidden && (!fsEverActive || isFs())){ $('overlay').classList.remove('show'); } });
+document.addEventListener('fullscreenchange', checkLock);
+document.addEventListener('webkitfullscreenchange', checkLock);
+
+/* block right-click, copy, selection, devtools/refresh shortcuts */
+document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+['copy','cut','paste'].forEach(function(ev){ document.addEventListener(ev, function(e){
+  if(e.target && e.target.id === 'name') return; // allow typing the name normally
+  e.preventDefault();
+});});
+document.addEventListener('keydown', function(e){
+  var k = (e.key || '').toLowerCase();
+  // F12 devtools
+  if(e.key === 'F12'){ e.preventDefault(); return; }
+  // refresh
+  if(e.key === 'F5' || ((e.ctrlKey||e.metaKey) && k === 'r')){ e.preventDefault(); return; }
+  // devtools / view-source / print / save / copy (block during quiz)
+  if((e.ctrlKey||e.metaKey)){
+    if(e.shiftKey && (k==='i'||k==='j'||k==='c')){ e.preventDefault(); return; }
+    if(k==='u'||k==='p'||k==='s'){ e.preventDefault(); return; }
+    if(quizActive && !finished && k==='c'){ e.preventDefault(); return; }
+  }
+}, true);
+
+window.addEventListener('beforeunload', function(e){
+  if(quizActive && !finished){ e.preventDefault(); e.returnValue = ''; return ''; }
+});
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function startTimer(){
+  updateTimer();
+  timerId = setInterval(function(){
+    remaining--;
+    updateTimer();
+    if(remaining <= 0){ clearInterval(timerId); finishQuiz(true); }
+  }, 1000);
+}
+function updateTimer(){
+  var m = Math.floor(remaining/60), s = remaining%60;
+  $('time').textContent = (m<10?'0':'')+m + ':' + (s<10?'0':'')+s;
+  var t = $('timer');
+  t.classList.toggle('warn', remaining<=300 && remaining>60);
+  t.classList.toggle('danger', remaining<=60);
+}
+
+/* ============================================================
+   RENDER QUESTION
+   ============================================================ */
+function buildDots(){
+  var wrap = $('dots'); wrap.innerHTML='';
+  for(var i=0;i<order.length;i++){
+    var d = document.createElement('button');
+    d.className='dot'; d.textContent=(i+1); d.setAttribute('aria-label','Go to question '+(i+1));
+    (function(idx){ d.addEventListener('click', function(){ cur=idx; renderQuestion(); }); })(i);
+    wrap.appendChild(d);
+  }
+}
+function refreshDots(){
+  var dots = $('dots').children;
+  for(var i=0;i<dots.length;i++){
+    dots[i].classList.toggle('answered', answers[i]!==null);
+    dots[i].classList.toggle('current', i===cur);
+  }
+}
+function renderQuestion(){
+  var qi = order[cur];
+  var q = QUESTIONS[qi];
+  $('qBadge').textContent = q.type==='tf' ? 'True or False' : 'Choose the best answer';
+  $('qText').textContent = q.q;
+  $('qNow').textContent = (cur+1);
+  $('progress').style.width = (((cur+1)/order.length)*100) + '%';
+
+  var box = $('options'); box.innerHTML='';
+  var map = optMap[cur];
+  for(var d=0; d<map.length; d++){
+    var realIdx = map[d];
+    var btn = document.createElement('button');
+    btn.className = 'opt' + (answers[cur]===d ? ' selected':'');
+    var letter = q.type==='tf' ? (realIdx===0?'T':'F') : String.fromCharCode(65+d);
+    btn.innerHTML = '<span class="marker">'+letter+'</span><span>'+q.o[realIdx]+'</span>';
+    (function(choice){ btn.addEventListener('click', function(){ answers[cur]=choice; renderQuestion(); }); })(d);
+    box.appendChild(btn);
+  }
+
+  $('prevBtn').disabled = (cur===0);
+  var nextBtn = $('nextBtn');
+  if(cur === order.length-1){ nextBtn.textContent = 'Finish test'; }
+  else { nextBtn.textContent = 'Next →'; }
+  refreshDots();
+}
+
+$('prevBtn').addEventListener('click', function(){ if(cur>0){ cur--; renderQuestion(); } });
+$('nextBtn').addEventListener('click', function(){
+  if(cur < order.length-1){ cur++; renderQuestion(); }
+  else { attemptFinish(); }
+});
+
+function attemptFinish(){
+  var unanswered = answers.filter(function(a){ return a===null; }).length;
+  var msg = unanswered>0
+    ? ('You still have '+unanswered+' unanswered question'+(unanswered>1?'s':'')+'.\n\nSubmit the test anyway?')
+    : 'Submit your test now?';
+  if(confirm(msg)){ finishQuiz(false); }
+}
+
+/* ============================================================
+   GRADE + RESULTS
+   ============================================================ */
+function finishQuiz(autoSubmitted){
+  finished = true; quizActive = false;
+  if(timerId) clearInterval(timerId);
+  $('overlay').classList.remove('show');
+  if(document.exitFullscreen){ try{ document.exitFullscreen(); }catch(e){} }
+
+  var score=0, u5=0, u6=0, u5t=0, u6t=0;
+  for(var i=0;i<order.length;i++){
+    var qi = order[i]; var q = QUESTIONS[qi];
+    if(q.unit===5) u5t++; else u6t++;
+    var chosenReal = answers[i]===null ? -1 : optMap[i][answers[i]];
+    if(chosenReal === q.a){ score++; if(q.unit===5) u5++; else u6++; }
+  }
+
+  $('scoreNum').textContent = score;
+  var pct = Math.round((score/order.length)*100);
+  var pctEl = $('scorePct');
+  pctEl.textContent = pct + '%';
+  var col = pct>=75 ? 'var(--green)' : (pct>=50 ? 'var(--gold)' : 'var(--red)');
+  pctEl.style.background = pct>=75 ? 'var(--green-bg)' : (pct>=50 ? 'rgba(245,194,75,.14)' : 'var(--red-bg)');
+  pctEl.style.color = col;
+
+  var v;
+  if(pct>=90) v="Outstanding! 🌟";
+  else if(pct>=75) v="Great work!";
+  else if(pct>=60) v="Good effort — keep practising.";
+  else if(pct>=50) v="You're getting there — review and try again.";
+  else v="Let's go over the lessons together.";
+  $('verdict').textContent = v;
+
+  $('u5').innerHTML = u5 + '<span>/'+u5t+'</span>';
+  $('u6').innerHTML = u6 + '<span>/'+u6t+'</span>';
+
+  var integ = $('integrity');
+  if(awayCount===0){
+    integ.className='integrity';
+    integ.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Stayed in the test the whole time.';
+  } else {
+    integ.className='integrity flag';
+    integ.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg> Left the test window '+awayCount+' time'+(awayCount>1?'s':'')+'.';
+  }
+  if(autoSubmitted){ $('verdict').textContent = "Time's up! " + v; }
+
+  buildReview();
+  $('reviewWrap').style.display='none';
+  $('reviewBtn').textContent = 'Review answers (for parent)';
+  show('results');
+}
+
+function buildReview(){
+  var wrap = $('review'); wrap.innerHTML='';
+  for(var i=0;i<order.length;i++){
+    var qi = order[i]; var q = QUESTIONS[qi];
+    var chosenReal = answers[i]===null ? -1 : optMap[i][answers[i]];
+    var ok = chosenReal === q.a;
+
+    var item = document.createElement('div');
+    item.className = 'rev-item ' + (ok?'correct':'wrong');
+
+    var chosenText = chosenReal===-1 ? '— (no answer)' : q.o[chosenReal];
+    var correctText = q.o[q.a];
+
+    item.innerHTML =
+      '<div class="rev-head">'+
+        '<span class="rev-num">Q'+(i+1)+'</span>'+
+        '<span class="rev-q">'+q.q+'</span>'+
+        '<span class="rev-tag '+(ok?'correct':'wrong')+'">'+(ok?'Correct':'Wrong')+'</span>'+
+      '</div>'+
+      '<div class="rev-line '+(ok?'good':'bad')+'"><span class="k">Their answer:</span> <span class="v">'+chosenText+'</span></div>'+
+      (ok ? '' : '<div class="rev-line good"><span class="k">Correct answer:</span> <span class="v">'+correctText+'</span></div>')+
+      '<div class="rev-exp"><b>Why</b>'+q.e+'</div>';
+    wrap.appendChild(item);
+  }
+}
+
+$('reviewBtn').addEventListener('click', function(){
+  var w = $('reviewWrap');
+  var open = w.style.display !== 'none';
+  w.style.display = open ? 'none' : 'block';
+  this.textContent = open ? 'Review answers (for parent)' : 'Hide review';
+  if(!open){ w.scrollIntoView({behavior:'smooth'}); }
+});
+
+$('restartBtn').addEventListener('click', function(){
+  finished=false;
+  $('name').value='';
+  show('intro');
+});
+
+/* ---------- wire up start ---------- */
+$('startBtn').addEventListener('click', startQuiz);
+$('name').addEventListener('keydown', function(e){ if(e.key==='Enter'){ startQuiz(); } });
+$('resumeBtn').addEventListener('click', function(){
+  $('overlay').classList.remove('show');
+  requestFs();
+});
+</script>
+</body>
+</html>
